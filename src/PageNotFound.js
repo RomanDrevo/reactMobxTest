@@ -1,0 +1,17 @@
+import React, {Component} from 'react';
+
+
+class PageNotFound extends Component {
+
+    render() {
+        const {} = this.props
+
+        return (
+            <div>
+                <h1>Page not found!</h1>
+            </div>
+        );
+    }
+}
+
+export default PageNotFound;
