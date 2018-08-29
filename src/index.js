@@ -7,6 +7,9 @@ import {Provider} from 'mobx-react';
 import testStore from './store'
 import 'react-bootstrap/dist/react-bootstrap';
 import {BrowserRouter as Router} from 'react-router-dom';
+import Auth from './Auth'
+
+const auth = new Auth()
 
 const stores = {testStore}
 
@@ -25,7 +28,8 @@ window.setState = (changes) => {
 }
 
 let initialState = {
-    name: 'Roman'
+    name: 'Roman',
+    auth
 }
 
 window.setState(initialState)

@@ -3,14 +3,35 @@ import logo from './logo.svg';
 import './App.css';
 
 import {inject, observer} from 'mobx-react';
-import Swiper from 'react-id-swiper';
 import {Grid} from "react-bootstrap";
 import axios from 'axios'
 import Home from "./Home";
-import {Route, Switch, withRouter} from "react-router-dom";
+import {Redirect, Route, Switch, withRouter} from "react-router-dom";
 import Admin from "./Admin";
 import PageNotFound from "./PageNotFound";
 import AuthCallback from "./AuthCallback";
+import Auth from "./Auth";
+
+
+const auth = new Auth()
+
+const fakeAuth = {
+    isAuthenticated: false
+}
+
+class PrivateRoute extends Component{
+    render(){
+        const Component = this.props.component
+        const isAuthenticated = auth.isAuthenticated()
+        console.log('Here!!!, auth: ', isAuthenticated)
+        return (
+            <Route render={(props) => (
+                isAuthenticated ? <Component {...props} />
+                    : <Redirect to='/unatorized' />
+            )} />
+        )
+    }
+}
 
 @withRouter
 @inject('testStore')
@@ -21,9 +42,9 @@ class App extends Component {
         axios.get('//localhost:3001/posts').then((response) => console.log('response: ', response.data))
     }
 
+
     render() {
-        const {name, location, history} = this.props
-        console.log('Name: ', name)
+        const {auth} = this.props
         console.log('Props: ', this.props)
 
         return (
@@ -37,11 +58,10 @@ class App extends Component {
                     {/*//path all props to route*/}
                     <Route exact path="/" render={() => <Home {...this.props}/>}/>
 
-                    <Route exact path="/admin" component={Admin}/>
+                    <Route path="/callback" component={AuthCallback}/>
 
-                    <Route exact path="/auth-callback" component={AuthCallback}/>
-
-                    <Route component={PageNotFound} />
+                    <Route path="/unatorized" component={PageNotFound} />
+                    <PrivateRoute path='/admin' component={Admin} />
                 </Switch>
 
             </Grid>
